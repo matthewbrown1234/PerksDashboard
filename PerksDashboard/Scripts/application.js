@@ -5,7 +5,8 @@ let Application = function() {
         ACTIVITY: {
             BASE: "/activity",
             LIST: "/getactivitylist",
-            DETAILS: "/getActivityDetails"
+            DETAILS: "/getActivityDetails",
+            VERIFY: "/verifyActivity"
         }
     };
     let Events = function () {
@@ -44,6 +45,7 @@ let Application = function() {
     };
     let columnFilters = new ColumnFilters();
     let VerifyDashboard = function () {
+        let itemsChecked = {};
         let table = null, verifyDashboardTableSelector = `#verify-dashboard #varify-dashboard-table`;
         let columns = [
             {
@@ -114,6 +116,40 @@ let Application = function() {
                     console.error(er);
                 });
             });
+            $('#verify-btn').unbind().on('click', function () {
+                let data = [];
+                for (let item in itemsChecked) {
+                    if (itemsChecked.hasOwnProperty(item) && itemsChecked[item]) {
+                        data.push(item);
+                    }
+                }
+                if (data.length > 0) {
+                    $.ajax({
+                        url: `${APIS.BASE}${APIS.ACTIVITY.BASE}${APIS.ACTIVITY.VERIFY}?${$.param({ itemList: data })}`,
+                        type: "PUT"
+                    }).success(() =>  {
+                        alert("Success!");
+                        for (let item of data) {
+                            let selector = `table *[data-row="${item}"] :checkbox`;
+                            $(selector).attr("disabled", "disabled");
+                        }
+                        itemsChecked = {};
+                    }).error((er) => {
+                        console.error(er);
+                    });
+                }
+            });
+            $(':checkbox').change(function () {
+                if ($(this).is(":checked")) {
+                    $(this).attr("checked", true);
+                    itemsChecked[$(this).parent().parent()[0].dataset.row] = true;
+                }
+                else {
+                    $(this).attr("checked", false);
+                    itemsChecked[$(this).parent().parent()[0].dataset.row] = false;
+                }
+            });
+
         }
         let initializeApp = () => {
             return new Promise((resolve, reject) => {
@@ -127,6 +163,9 @@ let Application = function() {
                         url: "/home/LoadData",
                         type: "POST",
                         datatype: "json"
+                    },
+                    createdRow: function (row, data, dataIndex) {
+                        $(row).attr('data-row', data.Id);
                     },
                     drawCallback: (data) => {
                         clickHandlers();

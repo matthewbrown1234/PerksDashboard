@@ -13,7 +13,7 @@ namespace PerksDashboard.Controllers
 {
     public class ActivityController : ApiController
     {
-        public HttpResponseMessage getActivityDetails(Int32 activityId, char activityType)
+        public HttpResponseMessage GetActivityDetails(Int32 activityId, char activityType)
         {
             if (activityType.Equals('s'))
             {
@@ -34,7 +34,15 @@ namespace PerksDashboard.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, recognitionActivity);
             }
             return Request.CreateResponse(HttpStatusCode.NoContent);
-
+        }
+        [AcceptVerbs("PUT")]
+        public HttpResponseMessage VerifyActivity([FromUri] Int32[] itemList)
+        {
+            using (SqlConnection con1 = new SqlConnection(ConfigurationManager.ConnectionStrings["PerksDb"].ConnectionString))
+            {
+                Activity.verifyActivity(con1, itemList);
+            }
+            return Request.CreateResponse(HttpStatusCode.OK); 
         }
     }
 }

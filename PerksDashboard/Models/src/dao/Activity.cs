@@ -20,6 +20,8 @@ namespace PerksDashboard.Models.src.dao
 
         private static String SELECT_RECOGNITION_ACTIVITY = "select h.name, a.type, r.reason, a.id as activity_id, s.reason_id, s.id as recognition_id, a.description, a.date_time, a.verified as activity_verified from [dbo].[activity] a join [dbo].[recognition] s on a.id = s.activity_id join [dbo].[handle] h on h.id = a.handle_id JOIN [dbo].[recognition_reason] r on r.id = s.reason_id WHERE activity_id = @activityId";
 
+        private static String UPDATE_VERIFY_ACTIVITY = "update [dbo].[activity] set verified = 1 where id ";
+
         public static List<ActivityDto> getAllActivities(SqlConnection connection, Int32 startRow, Int32 endRow)
         {
             List<ActivityDto> activityList = new List<ActivityDto>();
@@ -51,12 +53,44 @@ namespace PerksDashboard.Models.src.dao
             }
             return activityList;
         }
+        public static void verifyActivity(SqlConnection connection, Int32[] itemList)
+        {
+            try
+            {
+                string updateStatement = UPDATE_VERIFY_ACTIVITY;
+                updateStatement += "in(";
+                for (int i = 0; i < itemList.Length; i ++)
+                {
+                    updateStatement += "@param" + i;
+                    updateStatement += itemList.Length -1 == i ? "" : ",";
+                }
+                updateStatement += ")";
+                SqlCommand command = new SqlCommand(updateStatement, connection);
+                for (int i = 0; i < itemList.Length; i ++)
+                {
+                    command.Parameters.Add("param" + i, SqlDbType.Int).Value = itemList[i];
+                }
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+                connection.Dispose();
+            }
+        }
         public static Int32 getActivityCount(SqlConnection connection)
         {
             Int32 activityCount;
             try
             {
-               
                 SqlCommand command = new SqlCommand(ACTIVITY_COUNT, connection);
                 connection.Open();
                 using (SqlDataReader rdr = command.ExecuteReader())
