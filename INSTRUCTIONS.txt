@@ -1,0 +1,7 @@
+On a clean environemtn, please run:
+ sql/setup_environment.sql
+ sql/insert_data.sql
+Tools used:
+ Visual Studio 2017 Community
+ Sql Server 2016
+ Sql Server Management Studio 14.0.17119.0
