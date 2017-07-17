@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="activityModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="activity">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="handle_id" Type="Int32" Nullable="false" />
+    <Property Name="description" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="date_time" Type="DateTimeOffset" Nullable="false" Precision="7" />
+    <Property Name="varified" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="handle" Relationship="Self.FK_ActivityHandle" FromRole="activity" ToRole="handle" />
+    <NavigationProperty Name="recognitions" Relationship="Self.FK_RecognitionActivity" FromRole="activity" ToRole="recognition" />
+    <NavigationProperty Name="sales" Relationship="Self.FK_SalesActivity" FromRole="activity" ToRole="sales" />
+  </EntityType>
+  <EntityType Name="handle">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="24" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="activities" Relationship="Self.FK_ActivityHandle" FromRole="handle" ToRole="activity" />
+  </EntityType>
+  <EntityType Name="recognition">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="activity_id" Type="Int32" Nullable="false" />
+    <Property Name="reason_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="activity" Relationship="Self.FK_RecognitionActivity" FromRole="recognition" ToRole="activity" />
+    <NavigationProperty Name="recognition_reason" Relationship="Self.FK_RecognitionReasonId" FromRole="recognition" ToRole="recognition_reason" />
+  </EntityType>
+  <EntityType Name="recognition_reason">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="reason" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="recognitions" Relationship="Self.FK_RecognitionReasonId" FromRole="recognition_reason" ToRole="recognition" />
+  </EntityType>
+  <EntityType Name="sale">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="invoice_id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="invoice_id" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="activity_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="activity" Relationship="Self.FK_SalesActivity" FromRole="sales" ToRole="activity" />
+  </EntityType>
+  <Association Name="FK_ActivityHandle">
+    <End Role="handle" Type="Self.handle" Multiplicity="1" />
+    <End Role="activity" Type="Self.activity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="handle">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity">
+        <PropertyRef Name="handle_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RecognitionActivity">
+    <End Role="activity" Type="Self.activity" Multiplicity="1" />
+    <End Role="recognition" Type="Self.recognition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="activity">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="recognition">
+        <PropertyRef Name="activity_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SalesActivity">
+    <End Role="activity" Type="Self.activity" Multiplicity="1" />
+    <End Role="sales" Type="Self.sale" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="activity">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="sales">
+        <PropertyRef Name="activity_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RecognitionReasonId">
+    <End Role="recognition_reason" Type="Self.recognition_reason" Multiplicity="1" />
+    <End Role="recognition" Type="Self.recognition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="recognition_reason">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="recognition">
+        <PropertyRef Name="reason_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="perksdbEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="activities" EntityType="Self.activity" />
+    <EntitySet Name="handles" EntityType="Self.handle" />
+    <EntitySet Name="recognitions" EntityType="Self.recognition" />
+    <EntitySet Name="recognition_reason" EntityType="Self.recognition_reason" />
+    <EntitySet Name="sales" EntityType="Self.sale" />
+    <AssociationSet Name="FK_ActivityHandle" Association="Self.FK_ActivityHandle">
+      <End Role="handle" EntitySet="handles" />
+      <End Role="activity" EntitySet="activities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RecognitionActivity" Association="Self.FK_RecognitionActivity">
+      <End Role="activity" EntitySet="activities" />
+      <End Role="recognition" EntitySet="recognitions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SalesActivity" Association="Self.FK_SalesActivity">
+      <End Role="activity" EntitySet="activities" />
+      <End Role="sales" EntitySet="sales" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RecognitionReasonId" Association="Self.FK_RecognitionReasonId">
+      <End Role="recognition_reason" EntitySet="recognition_reason" />
+      <End Role="recognition" EntitySet="recognitions" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

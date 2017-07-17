@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PerksdbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="activity">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="handle_id" Type="int" Nullable="false" />
+    <Property Name="description" Type="varchar" MaxLength="256" />
+    <Property Name="date_time" Type="datetimeoffset" Precision="7" Nullable="false" />
+    <Property Name="varified" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="handle">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="name" Type="varchar" MaxLength="24" Nullable="false" />
+  </EntityType>
+  <EntityType Name="recognition">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="activity_id" Type="int" Nullable="false" />
+    <Property Name="reason_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="recognition_reason">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="reason" Type="varchar" MaxLength="64" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sales">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="invoice_id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="invoice_id" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="activity_id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_ActivityHandle">
+    <End Role="handle" Type="Self.handle" Multiplicity="1" />
+    <End Role="activity" Type="Self.activity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="handle">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity">
+        <PropertyRef Name="handle_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RecognitionActivity">
+    <End Role="activity" Type="Self.activity" Multiplicity="1" />
+    <End Role="recognition" Type="Self.recognition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="activity">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="recognition">
+        <PropertyRef Name="activity_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RecognitionReasonId">
+    <End Role="recognition_reason" Type="Self.recognition_reason" Multiplicity="1" />
+    <End Role="recognition" Type="Self.recognition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="recognition_reason">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="recognition">
+        <PropertyRef Name="reason_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SalesActivity">
+    <End Role="activity" Type="Self.activity" Multiplicity="1" />
+    <End Role="sales" Type="Self.sales" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="activity">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="sales">
+        <PropertyRef Name="activity_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PerksdbModelStoreContainer">
+    <EntitySet Name="activity" EntityType="Self.activity" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="handle" EntityType="Self.handle" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="recognition" EntityType="Self.recognition" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="recognition_reason" EntityType="Self.recognition_reason" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sales" EntityType="Self.sales" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_ActivityHandle" Association="Self.FK_ActivityHandle">
+      <End Role="handle" EntitySet="handle" />
+      <End Role="activity" EntitySet="activity" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RecognitionActivity" Association="Self.FK_RecognitionActivity">
+      <End Role="activity" EntitySet="activity" />
+      <End Role="recognition" EntitySet="recognition" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RecognitionReasonId" Association="Self.FK_RecognitionReasonId">
+      <End Role="recognition_reason" EntitySet="recognition_reason" />
+      <End Role="recognition" EntitySet="recognition" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SalesActivity" Association="Self.FK_SalesActivity">
+      <End Role="activity" EntitySet="activity" />
+      <End Role="sales" EntitySet="sales" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

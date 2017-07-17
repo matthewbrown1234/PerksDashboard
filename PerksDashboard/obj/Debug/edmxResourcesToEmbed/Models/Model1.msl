@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="activityModelStoreContainer" CdmEntityContainer="perksdbEntities">
+    <EntitySetMapping Name="activities">
+      <EntityTypeMapping TypeName="activityModel.activity">
+        <MappingFragment StoreEntitySet="activity">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="handle_id" ColumnName="handle_id" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="date_time" ColumnName="date_time" />
+          <ScalarProperty Name="varified" ColumnName="varified" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="handles">
+      <EntityTypeMapping TypeName="activityModel.handle">
+        <MappingFragment StoreEntitySet="handle">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="recognitions">
+      <EntityTypeMapping TypeName="activityModel.recognition">
+        <MappingFragment StoreEntitySet="recognition">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="activity_id" ColumnName="activity_id" />
+          <ScalarProperty Name="reason_id" ColumnName="reason_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="recognition_reason">
+      <EntityTypeMapping TypeName="activityModel.recognition_reason">
+        <MappingFragment StoreEntitySet="recognition_reason">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="reason" ColumnName="reason" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sales">
+      <EntityTypeMapping TypeName="activityModel.sale">
+        <MappingFragment StoreEntitySet="sales">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="invoice_id" ColumnName="invoice_id" />
+          <ScalarProperty Name="activity_id" ColumnName="activity_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
